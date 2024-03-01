@@ -1,3 +1,7 @@
+# TODO: make it work if the completions is asked from the middle
+# TODO: make it not repeat the same entries
+# TODO: make switches with parameters work
+
 lpm_switches="
   --json --verbose
   --quiet --version
@@ -32,7 +36,7 @@ function _lpm_list_addons()
   fi
 
   # shellcheck disable=SC2086 # Intended splitting of filter
-  COMPREPLY+=($(compgen -W "$(lpm list $filter --table 'id' | awk 'NR>2{print $2}')" -- "${COMP_WORDS[-1]}"))
+  COMPREPLY+=($(compgen -W "$(lpm list $filter --raw 'id')" -- "${COMP_WORDS[-1]}"))
 }
 
 function _lpm_list_installed_addons()
@@ -44,10 +48,10 @@ function _lpm_list_installed_addons()
 
   # shellcheck disable=SC2086 # Intended splitting of filter
   COMPREPLY+=($(compgen -W "$( (
-                lpm list $filter --table 'id' --status=installed;\
-                lpm list $filter --table 'id' --status=upgradable;\
-                lpm list $filter --table 'id' --status=orphan;\
-              ) | awk 'NR>2{print $2}')" -- "${COMP_WORDS[-1]}"))
+                lpm list $filter --raw 'id' --status=installed;\
+                lpm list $filter --raw 'id' --status=upgradable;\
+                lpm list $filter --raw 'id' --status=orphan;\
+              ) )" -- "${COMP_WORDS[-1]}"))
 }
 
 function _lpm_addon_completions()
